@@ -12,8 +12,9 @@ This simulation involves:
 
 
 The repository includes two scripts:
+https://github.com/AKurtz87/modbus/blob/main/2PLCs_client_web_hmi_modbus.py
 1. **`4plc_server_auto.py`**: Simulates two PLCs in a local environment to control the air conditioning units.
-2. **`4plc_client_html_full_write.py`**: Implements an HTTP server, providing an HMI that allows user interaction via a web interface.
+2. **`2PLCs_client_web_hmi_modbus.py`**: Implements an HTTP server, providing an HMI that allows user interaction via a web interface.
 
 ## Components
 
@@ -26,7 +27,7 @@ The repository includes two scripts:
   - **Discrete Inputs**: These represent the **status (ON/OFF)** of each air conditioning unit. The discrete inputs allow the PLCs to monitor whether each unit is currently active or inactive.
   - **Coils**: These are controlled by the user through the HMI to **turn the air conditioning units ON or OFF**. The coils allow the user to issue direct control commands to each unit through the web interface.
 
-### 2. HTTP Client (`4plc_client_html_full_write.py`)
+### 2. HTTP Client (`2PLCs_client_web_hmi_modbus.py`)
 - This script provides an **HTTP server** that enables a **web-based HMI** for interacting with the PLCs.
 - The HMI can be accessed through a browser, allowing users to visualize and control the air conditioning units.
 - The client script sends control commands to the simulated PLCs through the Modbus protocol and displays real-time system data.
@@ -63,14 +64,14 @@ Once the server-side and client-side scripts are launched, the system operates a
 1. **Start the PLC Server**
    - Run the server script to start simulating the PLCs:
      ```sh
-     python 4plc_server_auto.py
+     python 4plc_server_auto
      ```
    - This will start two PLCs locally, each managing part of the air conditioning units.
 
 2. **Start the HTTP Client**
    - In a separate terminal, run the client script to start the HTTP server:
      ```sh
-     python 4plc_client_html_full_write.py
+     python 2PLCs_client_web_hmi_modbus.py
      ```
    - Once the server is running, you can access the web-based HMI by opening your browser and navigating to `http://localhost:8000`.
 
@@ -81,7 +82,7 @@ Once the server-side and client-side scripts are launched, the system operates a
 
 ## Folder Structure
 - **`4plc_server_auto.py`**: Script for simulating PLCs.
-- **`4plc_client_html_full_write.py`**: Script for HTTP server to provide the web HMI.
+- **`2PLCs_client_web_hmi_modbus.py`**: Script for HTTP server to provide the web HMI.
 - **`requirements.txt`**: List of dependencies required to run the scripts.
 
 ## Technologies Used
