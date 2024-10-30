@@ -18,7 +18,7 @@ https://github.com/AKurtz87/modbus/blob/main/2PLCs_client_web_hmi_modbus.py
 
 ## Components
 
-### 1. PLC Server (`4plc_server_auto.py`)
+### 1. PLC Server (`2PLCs_server_modbus.py`)
 - This script simulates **two PLCs** with **IDs 1 and 2**.
 - Since the PLCs are simulated locally, the use of unique IP addresses is bypassed by differentiating them based on their IDs.
 - The PLCs control **ten air conditioning units** by receiving control commands over the **Modbus TCP/IP** protocol.
