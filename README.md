@@ -13,7 +13,7 @@ This simulation involves:
 
 The repository includes two scripts:
 https://github.com/AKurtz87/modbus/blob/main/2PLCs_client_web_hmi_modbus.py
-1. **`4plc_server_auto.py`**: Simulates two PLCs in a local environment to control the air conditioning units.
+1. **``**: Simulates two PLCs in a local environment to control the air conditioning units.
 2. **`2PLCs_client_web_hmi_modbus.py`**: Implements an HTTP server, providing an HMI that allows user interaction via a web interface.
 
 ## Components
