@@ -8,6 +8,8 @@ This simulation involves:
 - **Two PLCs** (simulated in a local environment) with IDs **1** and **2**. These PLCs control the air conditioning units.
 - **Modbus TCP/IP** protocol is used to communicate between the client and server.
 - A **web-based HMI** that allows users to interact with the system through a browser, provided via an HTTP server.
+  <img width="1178" alt="Screenshot 2024-10-30 at 08 07 09" src="https://github.com/user-attachments/assets/fdd6f3c8-9c88-4305-9e95-7a60b7e4bebe">
+
 
 The repository includes two scripts:
 1. **`4plc_server_auto.py`**: Simulates two PLCs in a local environment to control the air conditioning units.
