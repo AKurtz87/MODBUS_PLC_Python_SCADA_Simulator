@@ -70,92 +70,116 @@ HTML_PAGE = """
     <meta charset="utf-8">
     <title>Modbus Data</title>
     <style>
-        body { display: flex; flex-direction: column; align-items: center; background-color: silver; }
-        table { width: 90%; border-collapse: collapse; margin: 20px 0; font-size: 18px; text-align: center; }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; }
+        body { display: flex; flex-direction: column; align-items: center; background-color: #99bedd; }
+        table { width: 90%; border-collapse: collapse; margin: 20px 0; font-size: 18px; text-align: center; border: solid; }
+        h3 { margin: 0px; }
+        th, td { padding: 12px; border-bottom: 1px solid; }
         button { min-width: 45px; }
         
     </style>
-    <script>
-        async function fetchData() {
-            try {
-                let response = await fetch('/api/data');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                let data = await response.json();
-                updateTable(data);
-            } catch (error) {
-                console.error('There has been a problem with your fetch operation:', error);
+<script>
+    async function fetchData() {
+        try {
+            let response = await fetch('/api/data');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            let data = await response.json();
+            updateTable(data);
+            updateTemperatureAlerts(); // Call this after updating the table
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
         }
+    }
 
-        function updateTable(data) {
-            let modbusTable = document.getElementById('modbus-table');
+    function updateTemperatureAlerts() {
+        // Select all <td> elements with the class 'temperatureValue'
+        const temperatureCells = document.querySelectorAll('td.temperatureValue');
 
-            modbusTable.innerHTML = `
-                <tr>
-                    <th></th>
-                    <th colspan="5"></th>
-                    <th colspan="5"></th>
-                </tr>`;
+        temperatureCells.forEach((cell) => {
+            // Get the value inside the <td> element
+            let temperatureValue = parseFloat(cell.textContent);
 
-            // Aggiungi riga con i valori di temperatura (Holding Registers)
-            let registers1 = data.registers_1 || ["N/A", "N/A", "N/A", "N/A", "N/A"];
-            let registers2 = data.registers_2 || ["N/A", "N/A", "N/A", "N/A", "N/A"];
-            modbusTable.innerHTML += `
-                <tr>
-                    <td>Temperature</td>
-                    ${registers1.map(value => `<td>${value}</td>`).join('')}
-                    ${registers2.map(value => `<td>${value}</td>`).join('')}
-                </tr>`;
-
-            // Aggiungi riga con lo stato dei PLC (Discrete Inputs)
-            let inputs1 = (data.inputs_1 || []).map(value => value ? "🟢" : "🔴");
-            let inputs2 = (data.inputs_2 || []).map(value => value ? "🟢" : "🔴");
-            modbusTable.innerHTML += `
-                <tr>
-                    <td>Status</td>
-                    ${inputs1.map(value => `<td>${value}</td>`).join('')}
-                    ${inputs2.map(value => `<td>${value}</td>`).join('')}
-                </tr>`;
-
-            // Aggiungi riga per la scrittura dei coil
-            modbusTable.innerHTML += `
-                <tr>
-                    <td></td>
-                    ${[...Array(10).keys()].map(i => {
-                        const unitId = i < 5 ? 1 : 2;
-                        const address = i;
-                        return `
-                            <td>
-                                <button onclick="writeCoil(${unitId}, ${address}, 1)">ON</button>
-                                <button onclick="writeCoil(${unitId}, ${address}, 0)">OFF</button>
-                            </td>`;
-                    }).join('')}
-                </tr>`;
-        }
-
-        async function writeCoil(unitId, address, value) {
-            try {
-                let response = await fetch(`/api/write_coil?unitId=${unitId}&address=${address}&value=${value}`, {
-                    method: 'POST'
-                });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                fetchData();
-            } catch (error) {
-                console.error('There has been a problem with your write operation:', error);
+            if (isNaN(temperatureValue)) {
+                // Skip if the value is not a number
+                return;
             }
-        }
 
-        setInterval(fetchData, 5000); // Aggiorna i dati ogni 5 secondi
-        window.onload = fetchData; // Carica i dati al caricamento della pagina
-    </script>
+            // Check if the value is >= 12
+            if (temperatureValue >= 12) {
+                // Add the emoji if it's not already there
+                if (!cell.textContent.includes('🚨')) {
+                    cell.textContent += ' 🚨';
+                }
+            } else {
+                // Remove the emoji if it's present
+                cell.textContent = cell.textContent.replace(' 🚨', '');
+            }
+        });
+    }
+
+    function updateTable(data) {
+        let modbusTable = document.getElementById('modbus-table');
+        // Aggiungi riga con i valori di temperatura (Holding Registers)
+        let registers1 = data.registers_1 || ["N/A", "N/A", "N/A", "N/A", "N/A"];
+        let registers2 = data.registers_2 || ["N/A", "N/A", "N/A", "N/A", "N/A"];
+        modbusTable.innerHTML = `
+            <tr>
+                <td>Temperature</td>
+                ${registers1.map(value => `<td class="temperatureValue">${value}</td>`).join('')}
+                ${registers2.map(value => `<td class="temperatureValue">${value}</td>`).join('')}
+            </tr>`;
+
+        // Aggiungi riga con lo stato dei PLC (Discrete Inputs)
+        let inputs1 = (data.inputs_1 || []).map(value => value ? "🟢" : "🔴");
+        let inputs2 = (data.inputs_2 || []).map(value => value ? "🟢" : "🔴");
+        modbusTable.innerHTML += `
+            <tr>
+                <td>Status</td>
+                ${inputs1.map(value => `<td>${value}</td>`).join('')}
+                ${inputs2.map(value => `<td>${value}</td>`).join('')}
+            </tr>`;
+
+        // Aggiungi riga per la scrittura dei coil
+        modbusTable.innerHTML += `
+            <tr>
+                <td></td>
+                ${[...Array(10).keys()].map(i => {
+                    const unitId = i < 5 ? 1 : 2;
+                    const address = i;
+                    return `
+                        <td>
+                            <button onclick="writeCoil(${unitId}, ${address}, 1)">ON</button>
+                            <button onclick="writeCoil(${unitId}, ${address}, 0)">OFF</button>
+                        </td>`;
+                }).join('')}
+            </tr>`;
+
+        // Update the temperature alerts after rendering the table
+        updateTemperatureAlerts();
+    }
+
+    async function writeCoil(unitId, address, value) {
+        try {
+            let response = await fetch(`/api/write_coil?unitId=${unitId}&address=${address}&value=${value}`, {
+                method: 'POST'
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            fetchData();
+        } catch (error) {
+            console.error('There has been a problem with your write operation:', error);
+        }
+    }
+    
+    setInterval(fetchData, 5000); // Aggiorna i dati ogni 5 secondi
+    window.onload = fetchData; // Carica i dati al caricamento della pagina
+</script>
+
   </head>
   <body>
-    <h2>Modbus HMI</h2>
+    <h3>CONDIZIONAMENTO LOCALE AGROALIMENTARE</h3>
     <table id="modbus-table">
     </table>
   </body>
