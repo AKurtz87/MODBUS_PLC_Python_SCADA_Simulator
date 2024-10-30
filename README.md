@@ -13,7 +13,7 @@ This simulation involves:
 
 The repository includes two scripts:
 https://github.com/AKurtz87/modbus/blob/main/2PLCs_client_web_hmi_modbus.py
-1. **``**: Simulates two PLCs in a local environment to control the air conditioning units.
+1. **`2PLCs_server_modbus.py`**: Simulates two PLCs in a local environment to control the air conditioning units.
 2. **`2PLCs_client_web_hmi_modbus.py`**: Implements an HTTP server, providing an HMI that allows user interaction via a web interface.
 
 ## Components
@@ -64,14 +64,14 @@ Once the server-side and client-side scripts are launched, the system operates a
 1. **Start the PLC Server**
    - Run the server script to start simulating the PLCs:
      ```sh
-     python 4plc_server_auto
+     python3 2PLCs_server_modbus.py
      ```
    - This will start two PLCs locally, each managing part of the air conditioning units.
 
 2. **Start the HTTP Client**
    - In a separate terminal, run the client script to start the HTTP server:
      ```sh
-     python 2PLCs_client_web_hmi_modbus.py
+     python3 2PLCs_client_web_hmi_modbus.py
      ```
    - Once the server is running, you can access the web-based HMI by opening your browser and navigating to `http://localhost:8000`.
 
@@ -81,7 +81,7 @@ Once the server-side and client-side scripts are launched, the system operates a
 - The HMI provides access to the **holding registers** (temperature values), **discrete inputs** (status of the units), and **coils** (control commands to turn units ON/OFF).
 
 ## Folder Structure
-- **`4plc_server_auto.py`**: Script for simulating PLCs.
+- **`2PLCs_server_modbus.py`**: Script for simulating PLCs.
 - **`2PLCs_client_web_hmi_modbus.py`**: Script for HTTP server to provide the web HMI.
 - **`requirements.txt`**: List of dependencies required to run the scripts.
 
@@ -104,9 +104,8 @@ Once the server-side and client-side scripts are launched, the system operates a
 ## Contributing
 Contributions are welcome! Please feel free to submit a pull request or open an issue for any enhancements or bug fixes.
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
 
 ## Contact
-For any questions or suggestions, please contact [your-email@example.com].
+For any questions or suggestions, please contact [codewars87@gmail.com].
 
