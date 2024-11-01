@@ -29,8 +29,8 @@ Il progetto mira a simulare uno scenario operativo realistico per un sistema di 
 
 ## Struttura dei File
 
-- **PLC_hmi.py**: Script Python del client HMI.
-- **PLC_server.py**: Script Python del server PLC.
+- **PLC\_hmi.py**: Script Python del client HMI.
+- **PLC\_server.py**: Script Python del server PLC.
 - **Dockerfile**: Dockerfile per la creazione dell'immagine del server PLC.
 - **Dockerfile.hmi**: Dockerfile per la creazione dell'immagine dell'HMI.
 - **requirements.txt**: File contenente le dipendenze necessarie per eseguire i due script, che include `pymodbus` e `flask`.
@@ -48,17 +48,20 @@ Per eseguire il progetto, sono necessari:
 ## Installazione e Deploy
 
 1. **Creare una rete Docker**:
+
    ```bash
    docker network create --subnet=172.18.0.0/16 my_network
    ```
 
-1. **Clonare la repository**:
+2. **Clonare la repository**:
+
    ```bash
    git clone <repository_url>
    cd <repository_directory>
    ```
 
-2. **Costruire le immagini Docker**:
+3. **Costruire le immagini Docker**:
+
    - Per il server PLC:
      ```bash
      docker build -f Dockerfile -t plc_server .
@@ -68,11 +71,14 @@ Per eseguire il progetto, sono necessari:
      docker build -f Dockerfile.hmi -t plc_hmi .
      ```
 
-3. **Avviare i container**:
-   - Avviare il client HMI:
+4. **Avviare i container**:
+
+   - Avviare il client HMI e mappare la porta per visualizzarlo nel browser:
      ```bash
-     docker run -d --name hmi_client --network my_network plc_hmi
+     docker run -d --network my_network --name hmi --ip 172.18.0.4 -p 8000:8000 plc_hmi
      ```
+     Questo comando avvia il container HMI, mappa la porta 8000 del localhost alla porta 8000 del container, e assegna un indirizzo IP univoco all'HMI. In questo modo, l'HMI sarà accessibile tramite il browser all'indirizzo `http://localhost:8000`.
+
    - Avviare più server PLC, assegnando indirizzi IP univoci:
      ```bash
      docker run -d --name plc_server_1 --network my_network --ip 172.18.0.2 plc_server
@@ -87,10 +93,9 @@ Per eseguire il progetto, sono necessari:
 
 ## Note
 
+Per maggiori dettagli sulla virtualizzazione tramite Docker, puoi consultare il seguente link: [Docker\_PLCs/dockerize.md](Docker_PLCs/dockerize.md)
+
 - Assicurarsi che tutti i container siano nella stessa rete Docker per consentire la comunicazione Modbus tra HMI e PLC.
 - Si consiglia di utilizzare Docker Compose per facilitare la gestione del deploy di più container.
 
-## License
-
-Questo progetto è distribuito sotto la licenza MIT. Sentiti libero di contribuire e migliorare il codice!
 
