@@ -1,6 +1,6 @@
 # HMI-PLC System with Docker and PyModbus
 
-Questo progetto utilizza Python e la libreria `pymodbus` per simulare un sistema di condizionamento che comprende 10 unità di condizionamento con 10 sensori di temperatura. Il progetto include uno script client e uno script server che agiscono rispettivamente come HMI (Human Machine Interface) e PLC (Programmable Logic Controller). Utilizzando Docker, è possibile creare immagini del client (HMI) e del server (PLC), facilitando il deploy di HMI e dei PLC in uno scenario operativo realistico.
+Questo progetto utilizza Python e la libreria `pymodbus` per simulare un sistema di condizionamento che comprende 5 unità di condizionamento con 5 sensori di temperatura controllati da un PLC. Il progetto include uno script client e uno script server che agiscono rispettivamente come HMI (Human Machine Interface) e PLC (Programmable Logic Controller). Utilizzando Docker, è possibile creare immagini del client (HMI) e del server (PLC), facilitando il deploy di HMI e dei PLC in uno scenario operativo realistico.
 
 ## Descrizione del Progetto
 
@@ -17,12 +17,12 @@ Le due componenti comunicano tramite il protocollo Modbus, reso possibile grazie
 Il progetto utilizza Docker per creare le immagini del client (HMI) e del server (PLC). Questo approccio consente di:
 
 - Effettuare il deploy dell'HMI su un container Docker.
-- Creare diversi container PLC, ognuno con un indirizzo IP univoco, simulando in questo modo le 10 unità di condizionamento e i loro sensori di temperatura.
+- Creare diversi container PLC, ognuno con un indirizzo IP univoco, simulando in questo modo il blocco di 5 unità di condizionamento e i loro sensori di temperatura.
 - Assicurare che HMI e PLC siano nella stessa subnet per consentire una comunicazione efficace tramite Modbus.
 
 ## Scopo del Progetto
 
-Il progetto mira a simulare uno scenario operativo realistico per un sistema di condizionamento composto da 10 unità con 10 sensori di temperatura. L'utente può controllare manualmente le unità di condizionamento tramite l'HMI:
+Il progetto mira a simulare uno scenario operativo realistico per un sistema di condizionamento composto da 5 unità con 5 sensori di temperatura. L'utente può controllare manualmente le unità di condizionamento tramite l'HMI:
 
 - **Accensione**: Se il condizionatore è acceso, la temperatura viene mantenuta a 8°C.
 - **Spegnimento**: Se il condizionatore viene spento, la temperatura aumenta progressivamente fino a raggiungere 25°C.
