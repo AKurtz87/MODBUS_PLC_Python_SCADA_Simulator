@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard SCADA</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box; /* Per evitare problemi di sizing */
+      }
+
+      body {
+        background-image: url('{{ url_for("static", filename="images/back_industrial.webp") }}');
+        background-size: cover;
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+
+      .sensor-container,
+      .control-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .sensor-card {
+        background: linear-gradient(to bottom right, #cdcdcd, #71a5b1);
+        background-color: rgba(0, 0, 0, 0);
+        border: 3px solid black;
+        padding: 20px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 150px;
+        text-align: center;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        height: 150px;
+        font-size: 10px;
+      }
+
+      .sensor-card.on {
+        border-color: lime; /* Bordo verde se il condizionatore è acceso (ON) */
+        #temperatura {
+          color: lime; /* Bordo verde se il condizionatore è acceso (ON) */
+          font-size: 18px;
+          font-weight: bold;
+        }
+      }
+
+      .sensor-card.allarme {
+        #temperatura {
+          color: red; /* Bordo verde se il condizionatore è acceso (ON) */
+          font-size: 18px;
+          font-weight: bold;
+        }
+      }
+
+      .control-card {
+        background: linear-gradient(to bottom left, #cdcdcd, #71a5b1);
+        border: 2px solid gray;
+        padding: 20px;
+        margin: 10px;
+        border-radius: 8px;
+        width: 150px;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .control-container form {
+        margin-top: 10px;
+      }
+
+      button {
+        padding: 10px 15px;
+        margin: 5px;
+        border: solid 1px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease; /* Aggiungi transizione per effetto al passaggio del mouse */
+        font-size: 8px;
+      }
+
+      button.on {
+        background-color: #1dd147;
+        color: black;
+      }
+
+      button.off {
+        background-color: #f73548;
+        color: black;
+      }
+
+      button:hover {
+        opacity: 0.8; /* Effetto hover per i pulsanti */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dashboard SCADA</h1>
+
+    <div class="sensor-container">
+      {% for i in range(temperature|length) %}
+      <div
+        class="sensor-card {% if condizionatori_stato[i] %} on{% endif %} {% if 'Sensore_' + (i+1)|string in sensori_in_allarme %} allarme{% endif %}"
+      >
+        <i class="fas fa-thermometer-half fa-3x"></i>
+        <h2>Sensore {{ i+1 }}</h2>
+        <p id="temperatura">{{ temperature[i] }} °C</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="control-container">
+      {% for i in range(1, condizionatori_stato|length + 1) %}
+      <div class="control-card">
+        <h3>Condizionatore {{ i }}</h3>
+        <form action="{{ url_for('controlla_condizionatore') }}" method="post">
+          <input type="hidden" name="condizionatore_id" value="{{ i }}" />
+          <button type="submit" name="stato" value="on" class="on">
+            Accendi
+          </button>
+          <button type="submit" name="stato" value="off" class="off">
+            Spegni
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+      //setInterval(function () {
+      //window.location.reload();
+      //}, 5000);
+    </script>
+  </body>
+</html>
