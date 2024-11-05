@@ -5,7 +5,8 @@ import logging
 # Configurazione del logging per facilitare il debug
 logging.basicConfig(level=logging.INFO)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
+
 
 # Connessione al server OPC UA
 client = Client("opc.tcp://localhost:4840/freeopcua/server/")
@@ -79,3 +80,4 @@ def controlla_condizionatore():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
