@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chemical Plant SCADA</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box; /* Per evitare problemi di sizing */
+      }
+
+      body {
+        background-image: url('{{ url_for("static", filename="images/back_industrial.webp") }}');
+        background-size: cover;
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .sensor-container,
+      .control-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .sensor-card,
+      .control-card {
+        background: linear-gradient(to bottom right, #cdcdcd, #71a5b1);
+        border: 3px solid black;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        text-align: center;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        font-size: 14px;
+        position: relative;
+      }
+
+      .sensor-card.agitatore-attivo {
+        border-color: #7fff45;
+      }
+
+      button {
+        padding: 5px 15px;
+        margin: 5px;
+        border: solid 1px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 8px;
+        min-width: 125px;
+      }
+
+      .on {
+        background-color: lime;
+        color: black;
+      }
+
+      .off {
+        background-color: red;
+        color: black;
+      }
+
+      button:hover {
+        opacity: 0.8;
+      }
+
+      input {
+        font-size: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Chemical Plant SCADA</h1>
+
+    <div class="sensor-container">
+      {% for reattore, dati in variabili_reattori.items() %}
+      <div
+        class="sensor-card {% if dati.agitatore_status == 1 %}agitatore-attivo{% endif %}"
+      >
+        {% if dati.valvola_mandata == 1 %} {% endif %}
+        <h2>{{ reattore }}</h2>
+        <p><strong>Temperatura: </strong>{{ dati.temperatura }} °C</p>
+        <p><strong>Pressione: </strong>{{ dati.pressione }} bar</p>
+        <p><strong>Livello: </strong>{{ dati.livello }} %</p>
+        <p>
+          <strong>Valvola Mandata: </strong>{{ 'Aperta' if dati.valvola_mandata
+          == 1 else 'Chiusa' }}
+        </p>
+        <form
+          action="/valvola_mandata_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input type="hidden" name="stato_valvola" value="1" />
+          <button
+            type="submit"
+            class="{% if dati.valvola_mandata == 0 %}on{% endif %}"
+          >
+            Apri Valvola Mandata
+          </button>
+        </form>
+        <form
+          action="/valvola_mandata_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input type="hidden" name="stato_valvola" value="0" />
+          <button
+            type="submit"
+            class="{% if dati.valvola_mandata == 1 %}off{% endif %}"
+          >
+            Chiudi Valvola Mandata
+          </button>
+        </form>
+        <p>
+          <strong>Valvola Scarico: </strong>{{ 'Aperta' if dati.valvola_scarico
+          == 1 else 'Chiusa' }}
+        </p>
+        <form
+          action="/valvola_scarico_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input type="hidden" name="stato_valvola" value="1" />
+          <button
+            type="submit"
+            class="{% if dati.valvola_scarico == 0 %}on{% endif %}"
+          >
+            Apri Valvola Scarico
+          </button>
+        </form>
+        <form
+          action="/valvola_scarico_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input type="hidden" name="stato_valvola" value="0" />
+          <button
+            type="submit"
+            class="{% if dati.valvola_scarico == 1 %}off{% endif %}"
+          >
+            Chiudi Valvola Scarico
+          </button>
+        </form>
+        {% if dati.valvola_scarico == 1 %} {% endif %}
+        <p>
+          <strong>Riscaldamento: </strong>{{ 'Acceso' if
+          dati.camicia_riscaldamento == 1 else 'Spento' }}
+        </p>
+        <form
+          action="/camicia_riscaldamento_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input type="hidden" name="stato_riscaldamento" value="1" />
+          <button
+            type="submit"
+            class="{% if dati.camicia_riscaldamento == 0 %}on{% endif %}"
+          >
+            Accendi Riscaldamento
+          </button>
+        </form>
+        <form
+          action="/camicia_riscaldamento_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input type="hidden" name="stato_riscaldamento" value="0" />
+          <button
+            type="submit"
+            class="{% if dati.camicia_riscaldamento == 1 %}off{% endif %}"
+          >
+            Spegni Riscaldamento
+          </button>
+        </form>
+        <p>
+          <strong>Agitatore: </strong>{{ 'Acceso' if dati.agitatore_status else
+          'Spento' }}
+        </p>
+        <form
+          action="/agitatore_status_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input type="hidden" name="stato_agitatore" value="true" />
+          <button
+            type="submit"
+            class="{% if dati.agitatore_status == 0 %}on{% endif %}"
+          >
+            Accendi Agitatore
+          </button>
+        </form>
+        <form
+          action="/agitatore_status_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input type="hidden" name="stato_agitatore" value="false" />
+          <button
+            type="submit"
+            class="{% if dati.agitatore_status == 1 %}off{% endif %}"
+          >
+            Spegni Agitatore
+          </button>
+        </form>
+        <p>
+          <strong>Velocità Agitatore: </strong>{{ dati.agitatore_speed }} RPM
+        </p>
+        <form
+          action="/agitatore_speed_{{ reattore }}"
+          method="POST"
+          style="display: inline-block"
+        >
+          <input
+            type="number"
+            name="velocita_agitatore"
+            min="0"
+            max="3000"
+            value="{{ dati.agitatore_speed }}"
+          />
+          <button type="submit" class="btn btn-primary">
+            Imposta RPM Agitatore
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+      setInterval(function () {
+        window.location.reload();
+      }, 5000);
+    </script>
+  </body>
+</html>
