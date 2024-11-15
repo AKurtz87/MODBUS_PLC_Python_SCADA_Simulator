@@ -55,6 +55,7 @@ Once the server-side and client-side scripts are launched, the system operates a
   - Buttons for ON/OFF control of each unit.
 - Background: Air-conditioning-themed design.
 
+<img width="1432" alt="Screenshot 2024-11-15 at 14 56 03" src="https://github.com/user-attachments/assets/79446951-758e-4017-b3a6-e1b897a75179">
 
 #### Graph Interface
 - Features:
